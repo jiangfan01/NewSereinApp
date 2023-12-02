@@ -20,7 +20,9 @@ const VideoStackScreen = () => {
                     title: '视频',
                 })}
             />
-            <VideoStack.Screen name="Courses" component={CoursesScreen}/>
+            <VideoStack.Screen options={({navigation, route}) => ({
+                title: route.params.title,
+            })} name="Courses" component={CoursesScreen}/>
         </VideoStack.Navigator>
     );
 };

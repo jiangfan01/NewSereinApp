@@ -2,27 +2,77 @@ import {StyleSheet, ScrollView, Text, View, RefreshControl, FlatList} from 'reac
 import Loading from "../../components/shared/Loading";
 import NetworkError from "../../components/shared/NetworkError";
 import Colors from "../../constants/Colors";
-import axios from "axios";
+import {useEffect, useState} from "react";
+import {fetchHomeList} from "../../api/home";
+import Slide from "../../components/discover/home/Slide";
+import Swiper from "../../components/discover/home/Swiper";
+import DividerTitle from "../../components/discover/home/DividerTitle";
 
-const url = "/home"
 const HomeScreen = ({navigation}) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const [error, setError] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
+    const init = async () => {
+        try {
+            setLoading(true);
+            const res = await fetchHomeList();
+            setData(res.data);
+            setDataLoaded(true);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await init();
+        setRefreshing(false);
+    };
+
+    useEffect(() => {
+        init().then();
+    }, []);
+
+    if (loading) {
+        return <Loading/>;
+    }
+
+    if (error) {
+        return <NetworkError onReload={init}/>;
+    }
+
+    if (!dataLoaded || !data) {
+        return null;
+    }
 
 
     return (
         <ScrollView
             style={styles.container}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => onRefresh(url)}/>}>
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
             <View style={styles.course}>
-                <View style={styles.content}>
-                    <Text style={styles.heading}>推荐课程</Text>
-                </View>
-                <FlatList
-                    data={data.calendar_courses}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={renderItem}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                />
+
+                {/*推荐课程*/}
+                <Slide data={data.recommendedCourses} title={"推荐课程"}></Slide>
+
+                {/*课程发布时间*/}
+                <Swiper data={data.calendarCourses} title={"课程发布日历"}></Swiper>
+
+                {/*文字栏*/}
+                <DividerTitle title={'视频区域'} SubTitle={'VIDEO'}></DividerTitle>
+                {/*点赞数课程*/}
+                <Swiper data={data.likesCourses} title={"最受欢迎的课程"}></Swiper>
+                {/*入门课程*/}
+                <Swiper data={data.introductoryCourses} title={"入门课程"}></Swiper>
+
+                {/*文字栏*/}
+                <DividerTitle title={'开发教程'} SubTitle={'DOCUMENT'}></DividerTitle>
+                {/*推荐课程*/}
+                <Swiper data={data.recommendedCourses} title={"推荐课程"}></Swiper>
             </View>
         </ScrollView>
     );
@@ -33,48 +83,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    course: {
-        marginTop: 20,
-    },
-    content: {
-        paddingLeft: 15,
-        paddingRight: 15,
-    },
-    heading: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        marginBottom: 10,
-    },
-    default: {
-        position: 'relative',
-        width: 206,
-        marginLeft: 8,
-    },
-    first: {
-        marginLeft: 15,
-    },
-    last: {
-        marginRight: 15,
-    },
-    image: {
-        width: 206,
-        height: 160,
-        borderRadius: 5,
-    },
-    titleWrapper: {
-        marginTop: 6,
-        height: 48,
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: 16,
-    },
-    date: {
-        fontSize: 12,
-        marginTop: 6,
-        color: Colors.date,
-    },
 });
+
 
 export default HomeScreen;
 

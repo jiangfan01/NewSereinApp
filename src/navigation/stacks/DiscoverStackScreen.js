@@ -20,7 +20,9 @@ const DiscoverStackScreen = () => {
                     title: '发现',
                 })}
             />
-            <DiscoverStack.Screen name="Courses" component={CoursesScreen}/>
+            <DiscoverStack.Screen  options={({navigation, route}) => ({
+                title: route.params.title,
+            })} name="Courses" component={CoursesScreen}/>
         </DiscoverStack.Navigator>
     );
 };
