@@ -15,7 +15,9 @@ const InformationStackScreen = () => {
                 ...ModalOption(navigation),
                 title: '新闻',
             })}/>
-            <InformationStack.Screen name="Articles" component={ArticlesScreen}/>
+            <InformationStack.Screen name="Articles" component={ArticlesScreen} options={({navigation, route}) => ({
+                title: route.params.title,
+            })}/>
         </InformationStack.Navigator>
     );
 };

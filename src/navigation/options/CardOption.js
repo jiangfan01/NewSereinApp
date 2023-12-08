@@ -31,7 +31,7 @@ const CardOption = (route, navigation) => ({
             name={Platform.OS === 'ios' ? 'ios-chevron-back' : 'md-arrow-back'}
             size={Platform.OS === 'ios' ? 30 : 25}
             color={Colors.primary}
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.goBack(null)}
         />
     ),
 });

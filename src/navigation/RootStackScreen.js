@@ -38,6 +38,7 @@ const RootStackScreen = () => {
                         options={({navigation}) => ({
                             ...ModalOption(navigation),
                             presentation: 'modal',
+                            title:"授课老师"
                         })}
                     />
                 </RootStack.Group>

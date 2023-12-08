@@ -16,7 +16,6 @@ const HomeScreen = ({navigation}) => {
         try {
             setLoading(true)
             const res = await fetchArticlesList()
-            console.log(res.data, 99999)
             setData(res.data)
             setDataLoaded(true);
         } catch (err) {
@@ -25,9 +24,6 @@ const HomeScreen = ({navigation}) => {
             setLoading(false)
         }
     }
-    useEffect(() => {
-        init().then()
-    }, []);
 
     const onRefresh = async () => {
         setRefreshing(true);

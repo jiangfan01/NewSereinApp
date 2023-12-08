@@ -1,11 +1,24 @@
-import { View, Text } from 'react-native';
+import * as React from 'react';
+import ProgressWebView from '../../components/shared/ProgressWebView';
+import {WebView} from "react-native-webview";
+import {useState} from "react";
+import {StyleSheet, Text, View} from "react-native";
+import Colors from "../../constants/Colors";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import WebViewError from "../../components/shared/WebViewError";
 
-const ArticlesScreen = () => {
+const ArticlesScreen = ({route}) => {
+
+    // 因域名服务器到期webView失效
+    // const [webUrl, setWebUrl] = useState(`http://localhost:5173/show_article/${route?.params?.id}`)
+    // return <WebView
+    //     source={{uri: webUrl}}
+    // />;
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 24 }}>新闻的内页</Text>
-        </View>
-    );
-};
+        <WebViewError/>
+    )
+
+}
+
 
 export default ArticlesScreen;

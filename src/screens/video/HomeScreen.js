@@ -37,6 +37,10 @@ const HomeScreen = ({navigation}) => {
         return null;
     }
 
+    if (error) {
+        return <NetworkError/>
+    }
+
     return (
         <ScrollableTabView
             initialPage={0}
