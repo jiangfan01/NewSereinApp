@@ -75,15 +75,16 @@ const UserStackScreen = ({navigation}) => {
             signIn: async (data) => {
                 const usernameOrEmail = data.usernameOrEmail
                 const password = data.password
-                const res = await sign_in({usernameOrEmail, password})
-                await AsyncStorage.setItem('token', res.token)
-                setStateToken(res.token)
-                dispatch({type: 'SIGN_IN', token: res.token}); //修改dispatch状态并修改token字段
+                const confirmPassword = data.confirmPassword
+                const res = await sign_in({usernameOrEmail, password, confirmPassword})
+                await AsyncStorage.setItem('token', res.data.token)
+                setStateToken(res.data.token)
+                dispatch({type: 'SIGN_IN', token: res.data.token}); //修改dispatch状态并修改token字段
             },
             signOut: async () => {
                 await AsyncStorage.removeItem("token")
                 dispatch({type: 'SIGN_OUT'})
-                Alert.alert('Mind', '退出成功', [
+                Alert.alert('提示', '退出成功', [
                     {text: '好的', onPress: () => navigation.navigate("NoLogin")},
                 ]);
             },
@@ -91,13 +92,22 @@ const UserStackScreen = ({navigation}) => {
                 // 注册,获取到表单值后读取接口存入storage
                 const username = data.username
                 const password = data.password
-                await sign_up({username, password})
+                const email = data.email
+                const res = await sign_up({username, password, email})
                 dispatch({type: 'SIGN_IN', token: ""});
+                if (res.code !== 200) {
+                    Alert.alert('提示', `${res.message}`, [
+                        {text: '好的', onPress: () => navigation.navigate("Login")},
+                    ]);
+                } else {
+                    Alert.alert('提示', `${res.message}，去登录`, [
+                        {text: '好的', onPress: () => navigation.navigate("Login")},
+                    ]);
+                }
             },
         }),
         []
     );
-
     return (
         <AuthContext.Provider value={authContext}>
             <UserStack.Navigator

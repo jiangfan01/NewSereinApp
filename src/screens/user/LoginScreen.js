@@ -1,5 +1,5 @@
 import {useState, useCallback, useLayoutEffect, useContext} from 'react'
-import {View, StyleSheet, Button, Text, TouchableWithoutFeedback, TextInput} from 'react-native';
+import {View, StyleSheet, Button, Text, TouchableWithoutFeedback, TextInput, Alert} from 'react-native';
 import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import Colors from '../../constants/Colors';
 import Sign from "../../components/user/auth/SignIn";
@@ -11,7 +11,7 @@ const LoginScreen = ({navigation, props}) => {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [signInParams, setSignInParams] = useState({username: "", password: ""})
-    const [signUpParams, setSignUpParams] = useState({username: "1111111", password: "", sex: 0})
+    const [signUpParams, setSignUpParams] = useState({username: "", password: "", sex: 0})
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
@@ -44,11 +44,20 @@ const LoginScreen = ({navigation, props}) => {
     // 提交
     const submit = useCallback(() => {
         if (selectedIndex === 0) {
-            signIn(signInParams)
+            if (!signInParams.usernameOrEmail || !signInParams.password) {
+                Alert.alert("请输入账号密码！")
+                return;
+            }
+            signIn(signInParams);
         } else {
+            if (!signUpParams.username || !signUpParams.password || !signUpParams.email) {
+                Alert.alert("请输入完整注册信息！")
+                return;
+            }
             signUp(signUpParams)
         }
-    }, [signInParams, signUpParams])
+    }, [signInParams, selectedIndex, signIn, signUpParams]);
+
 
     return (
         <View style={styles.container}>

@@ -11,6 +11,7 @@ import WebViewError from "../../components/shared/WebViewError";
 import Loading from "../../components/shared/Loading";
 import NoData from "../../components/shared/NoData";
 import NetworkError from "../../components/shared/NetworkError";
+import {newHistories} from "../../api/histories";
 
 const ChaptersScreen = ({navigation, route}) => {
     const [headerTitle, setHeaderTitle] = useState();
@@ -19,12 +20,13 @@ const ChaptersScreen = ({navigation, route}) => {
     const [loading, setLoading] = useState(false);
     const [dataLoaded, setDataLoaded] = useState(false);
     const [error, setError] = useState(null);
+    const courseId = data?.chapter?.courseId
+    const chapterId = route?.params?.id
     const init = async (id) => {
         try {
             setLoading(true);
             const res = await fetchChapter(id);
             setData(res.data);
-            console.log(res.data,4444)
             setHeaderTitle(res.data?.chapter?.title || '');
             setDataLoaded(true);
         } catch (error) {
@@ -34,6 +36,10 @@ const ChaptersScreen = ({navigation, route}) => {
         }
     }
 
+
+    const addHistories = async () => {
+        await newHistories({courseId, chapterId})
+    }
 
     const onItemSelected = (id, item) => {
         setIsOpen(false);
@@ -47,7 +53,10 @@ const ChaptersScreen = ({navigation, route}) => {
 
     useEffect(() => {
         init(route.params.id).then();
-    }, [route.params.id]);
+        if (courseId) {
+            addHistories().then()
+        }
+    }, [route.params.id, courseId]);
 
     useLayoutEffect(() => {
         navigation.setOptions({

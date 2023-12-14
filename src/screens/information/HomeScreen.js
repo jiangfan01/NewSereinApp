@@ -1,9 +1,11 @@
 import {Text, View, Button, RefreshControl, FlatList, TouchableWithoutFeedback, StyleSheet} from 'react-native';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {fetchArticlesList} from "../../api/articles";
 import Loading from "../../components/shared/Loading";
 import NetworkError from "../../components/shared/NetworkError";
 import NoData from "../../components/shared/NoData";
+import LoadMore from "../../components/shared/LoadMore";
+import {fetchHistories} from "../../api/user";
 
 const HomeScreen = ({navigation}) => {
     const [data, setData] = useState([]);
@@ -11,6 +13,9 @@ const HomeScreen = ({navigation}) => {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false)
+    const [noMoreData, setNoMoreData] = useState(false)
+    let currentPage = `1`
 
     const init = async () => {
         try {
@@ -47,6 +52,25 @@ const HomeScreen = ({navigation}) => {
         return <NoData/>;
     }
 
+    const onLoadMore = async () => {
+        try {
+            currentPage++;
+            setLoadingMore(true);
+            const res = await fetchHistories({currentPage});
+            console.log(res, 313211)
+            if (res.data.articles.length === 0) {
+                setNoMoreData(true)
+                setData({articles: [...data?.articles, ...res?.articles]});
+            } else {
+                setData({articles: [...data?.articles, ...res?.articles]});
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setLoadingMore(false);
+        }
+    };
+
     const renderItem = ({item, index}) => (
         <TouchableWithoutFeedback
             key={item.id}
@@ -72,10 +96,12 @@ const HomeScreen = ({navigation}) => {
                 style={styles.container}
                 keyExtractor={item => item.id.toString()}
                 renderItem={renderItem}
-                onEndReachedThreshold={0.5}
+                onEndReached={onLoadMore}
+                onEndReachedThreshold={0}
                 showsHorizontalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
             />
+            <LoadMore loadingMore={loadingMore} />
         </>
     );
 };

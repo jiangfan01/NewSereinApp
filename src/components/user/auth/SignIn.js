@@ -3,14 +3,17 @@ import Colors from "../../../constants/Colors";
 
 const signIn = (props) => {
     const {signInParams, setSignInParams} = props
+
+
+
     return (
         <>
             <View style={styles.form}>
                 <Text>用户名/电子邮箱</Text>
                 <TextInput
                     placeholder="用户名/电子邮箱"
-                    onChangeText={(username) =>
-                        setSignInParams({...signInParams, username})
+                    onChangeText={(usernameOrEmail) =>
+                        setSignInParams({...signInParams, usernameOrEmail})
                     }
                     style={
                         {
@@ -28,6 +31,23 @@ const signIn = (props) => {
                     secureTextEntry={true}
                     onChangeText={(password) =>
                         setSignInParams({...signInParams, password})
+                    }
+                    style={
+                        {
+                            backgroundColor: "#eee",
+                            borderRadius: 3,
+                            paddingLeft: 5,
+                            fontSize: 12,
+                            marginTop: 5
+                        }}
+                />
+
+                <Text style={{marginTop: 20}}>确认密码</Text>
+                <TextInput
+                    placeholder="确认密码"
+                    secureTextEntry={true}
+                    onChangeText={(confirmPassword) =>
+                        setSignInParams({...signInParams, confirmPassword})
                     }
                     style={
                         {

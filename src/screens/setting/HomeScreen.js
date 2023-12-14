@@ -7,23 +7,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
 
 const HomeScreen = ({navigation}) => {
-    // const [token, setToken] = useState("")
-    // const isToken = async () => {
-    //     setToken(await AsyncStorage.getItem("token"))
-    // }
-    // useEffect(() => {
-    //     isToken().then()
-    // }, [])
-    // const LoginOut = () => {
-    //     Alert.alert('提醒', '确认退出？', [
-    //         {
-    //             text: '取消',
-    //             onPress: () => console.log('Cancel Pressed'),
-    //             style: 'cancel',
-    //         },
-    //         {text: '确定', onPress: () => navigation.navigate('UserStack', {screen: 'SignOut'})},
-    //     ]);
-    // }
+    const [token, setToken] = useState("")
+    const isToken = async () => {
+        setToken(await AsyncStorage.getItem("token"))
+    }
+
+    useEffect(() => {
+        isToken().then()
+    }, [])
+    const LoginOut = () => {
+        Alert.alert('提醒', '确认退出？', [
+            {
+                text: '取消',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            {text: '确定', onPress: () => navigation.navigate('UserStack', {screen: 'SignOut'})},
+        ]);
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -38,6 +39,14 @@ const HomeScreen = ({navigation}) => {
                     />
                 </Section>
 
+                {token ? <Section header="退出登录" footer="All rights reserved.">
+                    <Cell
+                        title="退出登录"
+                        titleTextColor={Colors.maintainer}
+                        onPress={() => LoginOut()}
+                        titleTextStyle={{textAlign: 'center'}}
+                    />
+                </Section> : ""}
             </TableView>
         </ScrollView>
     );
