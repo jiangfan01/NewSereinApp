@@ -36,3 +36,21 @@ j	打开调试工具
 r	重载（刷新）App
 m	打开、关闭开发工具菜单
 ?	显示所有可用命令
+```
+## 快速开始
+
+   克隆项目：
+
+   ```bash
+   
+   git clone https://github.com/jiangfan01/NewSereinApp.git
+
+   # 进入项目   cd SereinApp
+
+   # 安装依赖 yarn
+
+   # 启动项目 yarn start
+
+  在终端中使用 expo go软件扫码进入真机模拟
+
+  ```
